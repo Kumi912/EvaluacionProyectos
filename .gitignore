@@ -1,0 +1,4 @@
+#
+.env
+# Ocultar contraseñas locales
+appsettings.Development.json
