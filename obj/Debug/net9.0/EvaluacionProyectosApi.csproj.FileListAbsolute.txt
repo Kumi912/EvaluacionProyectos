@@ -38,3 +38,4 @@ D:\EvaluacionProyectosApi\obj\Debug\net9.0\EvaluacionProyectosApi.pdb
 D:\EvaluacionProyectosApi\obj\Debug\net9.0\EvaluacionProyectosApi.genruntimeconfig.cache
 D:\EvaluacionProyectosApi\obj\Debug\net9.0\ref\EvaluacionProyectosApi.dll
 D:\EvaluacionProyectosApi\bin\Debug\net9.0\Scalar.AspNetCore.dll
+D:\EvaluacionProyectosApi\obj\Debug\net9.0\EvaluacionProyectosApi.sourcelink.json
