@@ -1,6 +1,7 @@
-@EvaluacionProyectosApi_HostAddress = http://localhost:5124
+POST http://localhost:5124/api/Usuarios/login
+Content-Type: application/json
 
-GET {{EvaluacionProyectosApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+  "correo": "prueba@universidad.edu",
+  "password": "Password123!"
+}

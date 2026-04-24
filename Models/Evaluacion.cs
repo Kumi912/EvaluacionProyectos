@@ -1,6 +1,36 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
+namespace EvaluacionProyectosApi.Models // (Cambia a Api.Models cuando lo pegues en la API)
+{
+    public class Evaluacion
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+        
+        public string ProyectoId { get; set; } = "";
+        public string EvaluadorId { get; set; } = "";
+        public string EvaluadorNombre { get; set; } = "";
+        
+        public double CalificacionFinal { get; set; }
+        public string ComentarioGeneral { get; set; } = "";
+        
+        public DateTime FechaEvaluacion { get; set; } = DateTime.Now;
+    }
+}
+
+
+
+
+
+
+
+
+
+/* using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace EvaluacionProyectosApi.Models;
 
 public class Evaluacion
@@ -42,4 +72,4 @@ public class AnotacionArchivo
     public double CoordenadaX { get; set; }
     public double CoordenadaY { get; set; }
     public string ComentarioAnotacion { get; set; } = null!;
-}
+} */

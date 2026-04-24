@@ -3,6 +3,62 @@ using EvaluacionProyectosApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
+namespace EvaluacionProyectosApi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EvaluacionesController : ControllerBase
+    {
+        private readonly MongoDbService _mongoService;
+
+        public EvaluacionesController(MongoDbService mongoService)
+        {
+            _mongoService = mongoService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarEvaluacion([FromBody] Evaluacion nuevaEvaluacion)
+        {
+            try
+            {
+                // 1. Guardamos la evaluación en su propia colección
+                await _mongoService.Evaluaciones.InsertOneAsync(nuevaEvaluacion);
+
+                // 2. ¡MAGIA! Buscamos el proyecto y le cambiamos el estado a "Evaluado"
+                var update = Builders<Proyecto>.Update.Set(p => p.Estado, "Evaluado");
+                await _mongoService.Proyectos.UpdateOneAsync(p => p.Id == nuevaEvaluacion.ProyectoId, update);
+
+                return Ok(new { Mensaje = "Evaluación guardada con éxito" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al guardar evaluación: {ex.Message}");
+            }
+        }
+
+        // GET: api/evaluaciones/evaluador/{evaluadorId}
+        [HttpGet("evaluador/{evaluadorId}")]
+        public async Task<List<Evaluacion>> GetEvaluacionesPorMaestro(string evaluadorId)
+        {
+            // Busca en MongoDB todas las calificaciones que tengan la firma de este juez
+            return await _mongoService.Evaluaciones.Find(e => e.EvaluadorId == evaluadorId).ToListAsync();
+        }
+
+        // GET: api/evaluaciones/proyecto/{proyectoId}
+        [HttpGet("proyecto/{proyectoId}")]
+        public async Task<List<Evaluacion>> GetEvaluacionesPorProyecto(string proyectoId)
+        {
+            // Busca en MongoDB todas las calificaciones que le dieron a este proyecto específico
+            return await _mongoService.Evaluaciones.Find(e => e.ProyectoId == proyectoId).ToListAsync();
+        }
+    }
+}
+
+/* using EvaluacionProyectosApi.Models;
+using EvaluacionProyectosApi.Services;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+
 namespace EvaluacionProyectosApi.Controllers;
 
 [ApiController]
@@ -68,4 +124,4 @@ public class EvaluacionesController : ControllerBase
             detallesJueces = evaluaciones 
         });
     }
-}
+} */

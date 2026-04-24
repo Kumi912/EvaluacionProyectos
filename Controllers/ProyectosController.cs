@@ -16,18 +16,43 @@ public class ProyectosController : ControllerBase
         _mongoService = mongoService;
     }
 
-    // GET: api/proyectos -> Para listar todos los proyectos (útil para la barra de búsqueda y filtros)
+    // 🚨 NUEVO: GET: api/proyectos -> Trae TODOS los proyectos para el Evaluador
     [HttpGet]
-    public async Task<List<Proyecto>> GetProyectos()
+    public async Task<List<Proyecto>> GetTodosLosProyectos()
     {
+        // Va a MongoDB y trae absolutamente todos los proyectos registrados
         return await _mongoService.Proyectos.Find(_ => true).ToListAsync();
+    }
+
+    // GET: api/proyectos/{id} -> Trae un solo proyecto por su ID exacto
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Proyecto>> GetProyectoPorId(string id)
+    {
+        var proyecto = await _mongoService.Proyectos.Find(p => p.Id == id).FirstOrDefaultAsync();
+        if (proyecto == null) return NotFound("Proyecto no encontrado");
+        return Ok(proyecto);
+    }
+
+    // GET: api/proyectos/usuario/{dueñoId}
+    [HttpGet("usuario/{dueñoId}")]
+    public async Task<List<Proyecto>> GetProyectosPorUsuario(string dueñoId)
+    {
+        // Va a MongoDB y trae solo los proyectos que coincidan con el ID del dueño
+        return await _mongoService.Proyectos.Find(p => p.DueñoId == dueñoId).ToListAsync();
     }
 
     // POST: api/proyectos -> Para que el Dueño del Proyecto envíe uno nuevo
     [HttpPost]
     public async Task<IActionResult> CrearProyecto([FromBody] Proyecto nuevoProyecto)
     {
-        await _mongoService.Proyectos.InsertOneAsync(nuevoProyecto);
-        return Ok(new { mensaje = "Proyecto enviado correctamente", proyecto = nuevoProyecto });
+        try
+        {
+            await _mongoService.CrearProyectoAsync(nuevoProyecto);
+            return Ok(new { Mensaje = "Proyecto guardado con éxito" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error al guardar en MongoDB: {ex.Message}");
+        }
     }
 }

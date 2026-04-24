@@ -3,6 +3,19 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace EvaluacionProyectosApi.Models;
 
+// Creamos la misma sub-clase para MongoDB
+public class IntegranteProyecto
+{
+    [BsonElement("nombre")]
+    public string Nombre { get; set; } = string.Empty;
+
+    [BsonElement("rol")]
+    public string Rol { get; set; } = string.Empty;
+    
+    [BsonElement("esLider")]
+    public bool EsLider { get; set; } = false; // ¡NUEVO!
+}
+
 public class Proyecto
 {
     [BsonId]
@@ -12,8 +25,9 @@ public class Proyecto
     [BsonElement("titulo")]
     public string Titulo { get; set; } = null!;
 
+    // AHORA USA LA NUEVA CLASE DE INTEGRANTES
     [BsonElement("integrantes")]
-    public List<string> Integrantes { get; set; } = new();
+    public List<IntegranteProyecto> Integrantes { get; set; } = new();
 
     [BsonElement("dueñoId")]
     public string DueñoId { get; set; } = null!;
@@ -27,15 +41,18 @@ public class Proyecto
     [BsonElement("resumenRapido")]
     public string ResumenRapido { get; set; } = null!;
 
+    // Estos son opcionales (tienen el signo de interrogación ?)
     [BsonElement("problemaResuelve")]
-    public string ProblemaResuelve { get; set; } = null!;
+    public string? ProblemaResuelve { get; set; }
 
-    // Estos dos son opcionales (tienen el signo de interrogación ?)
     [BsonElement("instruccionesEspeciales")]
     public string? InstruccionesEspeciales { get; set; }
 
     [BsonElement("loMasDificil")]
     public string? LoMasDificil { get; set; }
+
+    [BsonElement("logoUrl")]
+    public string? LogoUrl { get; set; }
 
     [BsonElement("archivosNube")]
     public List<string> ArchivosNube { get; set; } = new();
